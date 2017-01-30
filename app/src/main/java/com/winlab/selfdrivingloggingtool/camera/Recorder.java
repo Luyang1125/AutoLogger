@@ -21,6 +21,7 @@ public class Recorder  implements SurfaceHolder.Callback
     SurfaceHolder  mHolder;
     private RecorderThread mRecorderThread;
     private boolean mHasSurface;
+    private File folder;
 
 
     public Recorder( SurfaceView sf){
@@ -31,6 +32,10 @@ public class Recorder  implements SurfaceHolder.Callback
         mHolder.setSizeFromLayout();
 
 
+    }
+
+    public void setFoler(File folder_main){
+        this.folder = folder_main;
     }
 
 

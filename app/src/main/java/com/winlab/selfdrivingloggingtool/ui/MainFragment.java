@@ -151,19 +151,18 @@ public class MainFragment extends Fragment {
     }
 
     public void startLogging(){
-        mRecorder.resume();
-
+        mDataManager = new DataManager();
+        mDataManager.startLogging();
     }
 
     public void stopLogging(){
-        mRecorder.pause();
-
+        mDataManager.stopLogging();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mRecorder.pause();
+        mDataManager.stopLogging();
     }
 
     public class DataReceiver extends BroadcastReceiver {

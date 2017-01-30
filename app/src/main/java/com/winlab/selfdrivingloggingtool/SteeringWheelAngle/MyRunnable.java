@@ -13,7 +13,7 @@ public class MyRunnable implements Runnable {
 	private volatile String timestamp;
 	private volatile String dataPacket;
 	
-	//public MyRunnable(float[] values, String tag, String recvTime){
+	//public Writer(float[] values, String tag, String recvTime){
 	public MyRunnable(String dataPacket){
 		/*this.values = values;
 		this.tag = tag;
