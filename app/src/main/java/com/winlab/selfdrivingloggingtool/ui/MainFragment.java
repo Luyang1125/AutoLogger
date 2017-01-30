@@ -23,6 +23,7 @@ import com.winlab.selfdrivingloggingtool.SteeringWheelAngle.SteeringWheelAngleMa
 import com.winlab.selfdrivingloggingtool.camera.Recorder;
 import com.winlab.selfdrivingloggingtool.speed.GPSSpeedManager;
 import com.winlab.selfdrivingloggingtool.utils.ApplicationHelper;
+import com.winlab.selfdrivingloggingtool.data.DataManager;
 
 import java.text.DecimalFormat;
 
@@ -39,7 +40,7 @@ public class MainFragment extends Fragment {
     private TextView mGPSFusedSpeed;
     private TextView mVehicleAcceleration;
     private ImageView mSteeringWheelImage;
-    public Recorder mRecorder;
+    private Recorder mRecorder;
     private SurfaceView mSurfaceView;
 
     private Context mContext = ApplicationHelper.getAppContext();
@@ -47,6 +48,7 @@ public class MainFragment extends Fragment {
     private DataReceiver mDataReceiver;
 
     private SteeringWheelAngleManager mSteeringWheelAngleManager;
+    private DataManager mDataManager;
     private GPSSpeedManager mGPSSpeedManager;
 
 
@@ -148,7 +150,15 @@ public class MainFragment extends Fragment {
         super.onDestroy();
     }
 
+    public void startLogging(){
+        mRecorder.resume();
 
+    }
+
+    public void stopLogging(){
+        mRecorder.pause();
+
+    }
 
     @Override
     public void onPause() {

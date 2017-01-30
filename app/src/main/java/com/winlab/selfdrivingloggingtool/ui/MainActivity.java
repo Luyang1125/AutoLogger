@@ -87,10 +87,10 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }else if(id ==R.id.action_startCamera){
             Log.i("MainActivity", "Starting Video Recording");
-            firstFragment.mRecorder.resume();
+            firstFragment.startLogging();
         }else if(id ==R.id.action_stopCamera) {
             Log.i("MainActivity","Stoping Video Recording");
-            firstFragment.mRecorder.pause();
+            firstFragment.stopLogging();
         }
         return super.onOptionsItemSelected(item);
     }
