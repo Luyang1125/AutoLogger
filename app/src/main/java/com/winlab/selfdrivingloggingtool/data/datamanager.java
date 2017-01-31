@@ -138,7 +138,7 @@ public class DataManager {
                 for(float v : value){
                     log = log + ", " + v;
                 }
-                Log.i(TAG, log);
+                //Log.i(TAG, log);
                 String dataPacket = "";
                 Writer myWriter;
                 switch (type){
