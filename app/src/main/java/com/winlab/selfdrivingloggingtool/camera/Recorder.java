@@ -118,11 +118,8 @@ public class Recorder  implements SurfaceHolder.Callback
                 m.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
 
 
-                File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "MyCameraApp");
-                mediaStorageDir.mkdir();
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                File mediaFile = new File(folder.getPath() + File.separator +
                         "VID_"+ timeStamp +"_"+System.currentTimeMillis()+ ".mp4");
 
                 m.setOutputFile(String.valueOf(mediaFile));

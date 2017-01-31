@@ -152,6 +152,7 @@ public class MainFragment extends Fragment {
 
     public void startLogging(){
         mDataManager = new DataManager();
+        mDataManager.setRecorder(mRecorder);
         mDataManager.startLogging();
     }
 
@@ -162,7 +163,9 @@ public class MainFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        mDataManager.stopLogging();
+        if(mDataManager.getRunningSign()) {
+            mDataManager.stopLogging();
+        }
     }
 
     public class DataReceiver extends BroadcastReceiver {
