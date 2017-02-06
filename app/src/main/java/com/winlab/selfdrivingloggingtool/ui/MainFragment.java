@@ -110,6 +110,8 @@ public class MainFragment extends Fragment {
         mGPSSpeedManager = new GPSSpeedManager();
         mGPSSpeedManager.start();
 
+        mDataManager = new DataManager();
+
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,8 +126,8 @@ public class MainFragment extends Fragment {
         //LocalBroadcastManager.getInstance(mContext).registerReceiver(mDataReceiver, new IntentFilter(Global.BROADCAST_PHONE_SENSOR));
         LocalBroadcastManager.getInstance(mContext).registerReceiver(mDataReceiver, new IntentFilter(Global.BROADCAST_IMU_CONNECTION));
         LocalBroadcastManager.getInstance(mContext).registerReceiver(mDataReceiver, new IntentFilter(Global.BROADCAST_STEERING_WHEEL_ANGLE));
-        /*LocalBroadcastManager.getInstance(mContext).registerReceiver(mDataReceiver, new IntentFilter(Global.BROADCAST_LOCATION));
-        LocalBroadcastManager.getInstance(mContext).registerReceiver(mDataReceiver, new IntentFilter(Global.BROADCAST_GOOGLE_ACTIVITY));*/
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(mDataReceiver, new IntentFilter(Global.BROADCAST_LOCATION));
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(mDataReceiver, new IntentFilter(Global.BROADCAST_GOOGLE_ACTIVITY));
 
 
         mRecorder = new Recorder(mSurfaceView);
@@ -151,7 +153,7 @@ public class MainFragment extends Fragment {
     }
 
     public void startLogging(){
-        mDataManager = new DataManager();
+
         mDataManager.setRecorder(mRecorder);
         mDataManager.startLogging();
     }

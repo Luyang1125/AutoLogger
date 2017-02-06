@@ -48,7 +48,7 @@ public class DataManager {
     private Recorder mRecorder;
 
     public DataManager(){
-        createFolderAndFiles();
+
     }
 
     public void setRecorder(Recorder mRecorder_in){
@@ -88,6 +88,9 @@ public class DataManager {
     }
 
     public void startLogging(){
+
+        createFolderAndFiles();
+
         running_sign = true;
         mRecorder.setFoler(directory);
         try {
