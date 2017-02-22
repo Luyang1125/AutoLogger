@@ -7,10 +7,8 @@ import android.content.IntentFilter;
 import android.os.Environment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.util.StringBuilderPrinter;
 
 import com.winlab.selfdrivingloggingtool.SteeringWheelAngle.Global;
-import com.winlab.selfdrivingloggingtool.SteeringWheelAngle.SteeringWheelAngleEst;
 import com.winlab.selfdrivingloggingtool.camera.Recorder;
 import com.winlab.selfdrivingloggingtool.utils.ApplicationHelper;
 
