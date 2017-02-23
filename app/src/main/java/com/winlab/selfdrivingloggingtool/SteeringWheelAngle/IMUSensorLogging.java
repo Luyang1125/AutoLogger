@@ -67,8 +67,8 @@ public class IMUSensorLogging {
         }
         socketConnected = false;
 
-        String address = "00:A0:96:3D:93:36";
-        //String address = "00:A0:96:3D:90:8C";
+        //String address = "00:A0:96:3D:93:36";
+        String address = "00:A0:96:3D:90:8C";
 
 
         mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(address);
@@ -109,7 +109,7 @@ public class IMUSensorLogging {
                 sendCommands("i");
                 sendCommands("n");
                 sendCommands("v");
-                sendCommands("l");
+                sendCommands("x");
                 sendCommands("i");
                 sendCommands("n");
                 sendCommands("v");

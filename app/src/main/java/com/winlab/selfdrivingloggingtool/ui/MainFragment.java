@@ -134,11 +134,11 @@ public class MainFragment extends Fragment {
         super.onResume();
     }
 
-    public void setSensorLoggingStatus(){
-        if(Global.SensorLogStatus == 1) {
+    public void setSensorLoggingStatus() {
+        if (Global.SensorLogStatus == 1) {
             mButton.setText(SENSOR_CONNECT);
             mButton.setBackgroundColor(Color.GREEN);
-        }else{
+        } else {
             mButton.setText(SENSOR_NOT_CONNECT);
             mButton.setBackgroundColor(Color.RED);
         }
@@ -152,20 +152,20 @@ public class MainFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void startLogging(){
+    public void startLogging() {
 
         mDataManager.setRecorder(mRecorder);
         mDataManager.startLogging();
     }
 
-    public void stopLogging(){
+    public void stopLogging() {
         mDataManager.stopLogging();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(mDataManager.getRunningSign()) {
+        if (mDataManager.getRunningSign()) {
             mDataManager.stopLogging();
         }
     }
@@ -175,58 +175,58 @@ public class MainFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             //Log.i("DataReceiverService","Received!");
             String act = intent.getAction();
-            if(act == Global.BROADCAST_IMU_CONNECTION){
+            if (act == Global.BROADCAST_IMU_CONNECTION) {
                 String time = Long.toString(intent.getLongExtra(Global.EXTENDED_DATA_TIMETAG, 0));
                 int sign = intent.getIntExtra(Global.EXTENDED_IMU_CONNECTION, 0);
-                if(sign==1){
+                if (sign == 1) {
                     mButton.setText(SENSOR_CONNECT);
                     mButton.setBackgroundColor(Color.GREEN);
                     mButton.setVisibility(View.INVISIBLE);
-                }else if(sign==0){
+                } else if (sign == 0) {
                     mButton.setText(SENSOR_NOT_CONNECT);
                     mButton.setBackgroundColor(Color.RED);
                     mSteeringWheelAngle.setText("");
                     mSteeringWheelImage.setRotation(0);
-                }else if(sign==2){
+                } else if (sign == 2) {
                     mButton.setText(SENSOR_CONNECTING);
                     mButton.setBackgroundColor(Color.YELLOW);
                 }
-            }else if(act == Global.BROADCAST_STEERING_WHEEL_ANGLE){
+            } else if (act == Global.BROADCAST_STEERING_WHEEL_ANGLE) {
                 String time = Long.toString(intent.getLongExtra(Global.EXTENDED_DATA_TIMETAG, 0));
                 double angle = intent.getDoubleExtra(Global.EXTENDED_STEERING_WHEEL_ANGLE_VALUE, 0);
-                String log = (int)angle + "°";
-                mSteeringWheelImage.setRotation((float)angle);
+                String log = (int) angle + "°";
+                mSteeringWheelImage.setRotation((float) angle);
                 Log.i(TAG, log);
                 mSteeringWheelAngle.setText(log);
                 mButton.setText(SENSOR_CONNECT);
                 mButton.setBackgroundColor(Color.GREEN);
-            }else if (act == Global.BROADCAST_LOCATION) {
+            } else if (act == Global.BROADCAST_LOCATION) {
                 Long time = intent.getLongExtra(Global.EXTENDED_DATA_TIMETAG, 0);
                 double lat = intent.getDoubleExtra(Global.EXTENDED_DATA_LAT, 0);
                 double lng = intent.getDoubleExtra(Global.EXTENDED_DATA_LNG, 0);
                 float speed = intent.getFloatExtra(Global.EXTENDED_DATA_SPEED, 0);
-                String log = "Speed: " + new DecimalFormat("##.##").format(speed*2.23694) + " mph";
+                String log = "Speed: " + new DecimalFormat("##.##").format(speed * 2.23694) + " mph";
                 mGPSFusedSpeed.setText(log);
-            }else if (act == Global.BROADCAST_GOOGLE_ACTIVITY) {
+            } else if (act == Global.BROADCAST_GOOGLE_ACTIVITY) {
                 Long time = intent.getLongExtra(Global.EXTENDED_DATA_TIMETAG, 0);
                 String msg = intent.getStringExtra(Global.EXTENDED_DATA_GOOGLE_ACTIVITY_MESSAGE);
                 mDrivingMode.setText(msg);
-            }else if (act == Global.BROADCAST_PHONE_SENSOR) {
+            } else if (act == Global.BROADCAST_PHONE_SENSOR) {
                 String time = Long.toString(intent.getLongExtra(Global.EXTENDED_DATA_TIMETAG, 0));
                 String type = intent.getStringExtra(Global.EXTENDED_PHONE_SENSOR_TYPE);
-                if(type == "ACCEL") {
+                if (type == "ACCEL") {
                     float[] value = intent.getFloatArrayExtra(Global.EXTENDED_PHONE_SENSOR_VALUE);
-                    String log = "Phone: "+ type + ", " + time;
-                    for(float v : value){
+                    String log = "Phone: " + type + ", " + time;
+                    for (float v : value) {
                         log = log + ", " + v;
                     }
-                    if(mDrivingMode.getText().equals("DRIVING")) {
+                    if (mDrivingMode.getText().equals("DRIVING")) {
                         mVehicleAcceleration.setText("Accel: " + new DecimalFormat("##.##").format(-value[2]) + "m/s^2");
-                        if(value[2]<-1){
+                        if (value[2] < -1) {
                             mVehicleAcceleration.setTextColor(Color.BLUE);
-                        }else if(value[2]>1){
+                        } else if (value[2] > 1) {
                             mVehicleAcceleration.setTextColor(Color.RED);
-                        }else{
+                        } else {
                             mVehicleAcceleration.setTextColor(Color.BLACK);
                         }
                     }
@@ -236,8 +236,6 @@ public class MainFragment extends Fragment {
         }
 
     }
-
-
 
 
 }

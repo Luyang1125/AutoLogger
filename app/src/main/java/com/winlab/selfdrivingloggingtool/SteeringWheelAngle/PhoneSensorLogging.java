@@ -75,7 +75,7 @@ public class PhoneSensorLogging {
         @Override
         public void onSensorChanged(SensorEvent event) {
 
-            Log.i("PhoneSensorLogging", "Sensor Changed!");
+            //Log.i("PhoneSensorLogging", "Sensor Changed!");
 
             // Broadcasting sensor data
             Long tsLong = System.currentTimeMillis();
