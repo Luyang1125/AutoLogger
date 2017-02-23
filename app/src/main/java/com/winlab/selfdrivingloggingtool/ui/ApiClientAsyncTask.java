@@ -57,7 +57,7 @@ public abstract class ApiClientAsyncTask<Params, Progress, Result>
             return null;
         }
         try {
-            return null;//doInBackgroundConnected(params);
+            return doInBackgroundConnected(params);
         } finally {
             mClient.disconnect();
         }
