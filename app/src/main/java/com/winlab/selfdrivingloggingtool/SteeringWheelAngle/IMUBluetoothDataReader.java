@@ -23,6 +23,8 @@ import java.util.concurrent.Semaphore;
  */
 public final class IMUBluetoothDataReader extends AsyncTask {
 
+    String tag = "IMUBluetoothDataReader";
+
     public final static int PACKET_DEBUG = 1;
     public final static int PACKET_QUAT = 2;
     public final static int PACKET_DATA = 3;
@@ -304,7 +306,7 @@ public final class IMUBluetoothDataReader extends AsyncTask {
 
                 if (readData(params, buffer, 23)) {
                     //	Log.e("NEW", String.valueOf(buffer[1]));
-                    //Log.i("here",""+buffer[1]);
+                    Log.i(tag,""+buffer[1]);
                     if (buffer[1] == PACKET_DATA) {
                         String recvTime = Long.toString(System.currentTimeMillis());
                         //Log.i("here",""+buffer[2]);

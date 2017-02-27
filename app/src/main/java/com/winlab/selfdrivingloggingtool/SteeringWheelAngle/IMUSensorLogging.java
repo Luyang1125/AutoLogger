@@ -7,6 +7,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,6 +25,8 @@ import java.util.UUID;
  * Created by Luyang on 9/4/2016.
  */
 public class IMUSensorLogging {
+
+    static String tag = "IMUSensorLogging";
 
     /**
      * Bluetooth Adapter of the device
@@ -69,6 +73,7 @@ public class IMUSensorLogging {
 
         //String address = "00:A0:96:3D:93:36";
         String address = "00:A0:96:3D:90:8C";
+        //String address = "EC:FE:7E:11:86:58";
 
 
         mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(address);
@@ -106,30 +111,13 @@ public class IMUSensorLogging {
                 notify.show();
                 socketConnected = true;
 
-                sendCommands("i");
-                sendCommands("n");
-                sendCommands("v");
-                sendCommands("x");
-                sendCommands("i");
-                sendCommands("n");
-                sendCommands("v");
-                sendCommands("a");
-                sendCommands("i");
-                sendCommands("n");
-                sendCommands("v");
-                sendCommands("g");
-//            sendCommands("i");
-//            sendCommands("n");
-//            sendCommands("v");
-//            sendCommands("c");
-//            sendCommands("i");
-//            sendCommands("n");
-//            sendCommands("v");
-//            sendCommands("q");
-                sendCommands("i");
-                sendCommands("n");
-                sendCommands("v");
-                sendCommands("4");
+                Handler MainActivityHandler = myHandler;
+
+                String command = "invainvginv4";
+
+                Message msg = new Message();
+                msg.obj = command;
+                MainActivityHandler.sendMessage(msg);
 
                 mBluetoothDataReader = new IMUBluetoothDataReader();
                 mBluetoothDataReader.execute(mBluetoothIS);
@@ -211,15 +199,22 @@ public class IMUSensorLogging {
         sendDisconnectBroadcast();
         notify.setGravity(Gravity.CENTER, 0, 0);
         notify.show();
-        if(socketConnected) {
-            mContext.unregisterReceiver(mReceiver);
+        if (socketConnected) {
+            sendCommands("invx");
+            if (!(mBluetoothDataReader.isCancelled())
+                    && mBluetoothDataReader.running) {
+                mBluetoothDataReader.running = false;
+                mBluetoothDataReader.cancel(true);
+                // mBluetoothDataReader = null;
+            }
             try {
-                mBluetoothIS.close();
                 mBluetoothOS.close();
+                mBluetoothIS.close();
                 mBluetoothSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.i("MainActivity", "exception thrown on close");
             }
+            mBluetoothSocket = null;
             socketConnected = false;
         }
     }
@@ -232,7 +227,7 @@ public class IMUSensorLogging {
                 for (int ii = 0; ii < cmd.length; ii++) {
                     mBluetoothOS.write(cmd[ii]);
                     long currentTime = System.currentTimeMillis();
-                    while (System.currentTimeMillis() - currentTime < 200) {
+                    while (System.currentTimeMillis() - currentTime < 50) {
                         ;
                     }
                 }
@@ -241,6 +236,14 @@ public class IMUSensorLogging {
             e.printStackTrace();
         }
     }
+
+    private Handler myHandler = new Handler(){
+        public void handleMessage(android.os.Message msg) {
+            String command = (String)msg.obj;
+            sendCommands(command);
+            Log.i(tag, "in command : " + command);
+        };
+    };
 
 
 

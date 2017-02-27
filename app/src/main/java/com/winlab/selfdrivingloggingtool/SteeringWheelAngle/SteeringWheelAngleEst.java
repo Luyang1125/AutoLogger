@@ -74,6 +74,8 @@ public class SteeringWheelAngleEst {
         float[] v3 = {phone_accel[0][1]/9.8f,-1};
         double angleError = MathUtils.angleBetweenVector(v1, v3, 0);
 
+        angleError = 0;
+
         angle = MathUtils.complementryFilter(angle, imu_gyro[0][1], accelAngle-angleError, 0.02, 0.9, 0);
         Log.i(TAG, "Angle: "+(int)angle +". Error: "+(int)angleError);
         sendAngleBroadCast(angle);
