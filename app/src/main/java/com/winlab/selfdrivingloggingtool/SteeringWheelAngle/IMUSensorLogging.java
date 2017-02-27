@@ -240,6 +240,10 @@ public class IMUSensorLogging {
     private Handler myHandler = new Handler(){
         public void handleMessage(android.os.Message msg) {
             String command = (String)msg.obj;
+            long currentTime = System.currentTimeMillis();
+            while (System.currentTimeMillis() - currentTime < 1000) {
+                ;
+            }
             sendCommands(command);
             Log.i(tag, "in command : " + command);
         };
