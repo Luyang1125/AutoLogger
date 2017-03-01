@@ -31,12 +31,20 @@ public class DataManager {
     private Context mContext = ApplicationHelper.getAppContext();
     private DataReceiver mDataReceiver = new DataReceiver();
 
+
+    private static final boolean Multiple_Files = true;
+    private static final boolean Single_Files = false;
+
+    private boolean DataRecordingMode = Single_Files;
+
     private File f_p_accel;
     private File f_p_gyro;
     private File f_p_magn;
     private File f_gps;
     private File f_s_accel;
     private File f_s_gyro;
+
+    private File f_single;
 
 
     private BufferedOutputStream bos_p_accel;
@@ -45,6 +53,8 @@ public class DataManager {
     private BufferedOutputStream bos_gps;
     private BufferedOutputStream bos_s_accel;
     private BufferedOutputStream bos_s_gyro;
+
+    private BufferedOutputStream bos_single;
 
     private File directory;
 
@@ -74,10 +84,9 @@ public class DataManager {
         String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
         String name_raw = currentDateTimeString + ".csv";
         String time = name_raw.replaceAll("\\s", "_");
-        folder_main = "AutoLogger/"+time;
+        folder_main = "AutoLogger/";
         folder = new File(Environment.getExternalStorageDirectory(),
                 folder_main);
-
 
         if (!folder.exists()) {
             folder.mkdirs();
@@ -85,12 +94,16 @@ public class DataManager {
 
         directory = Environment.getExternalStoragePublicDirectory(folder_main);
 
-        f_p_accel = new File(directory,"p_accel.csv");
-        f_p_gyro = new File(directory,"p_gyro.csv");
-        f_p_magn = new File(directory,"p_magn.csv");
-        f_gps = new File(directory,"gps.csv");
-        f_s_accel = new File(directory,"s_accel.csv");
-        f_s_gyro = new File(directory,"s_gyro.csv");
+        if(DataRecordingMode == Multiple_Files) {
+            f_p_accel = new File(directory, "p_accel.csv");
+            f_p_gyro = new File(directory, "p_gyro.csv");
+            f_p_magn = new File(directory, "p_magn.csv");
+            f_gps = new File(directory, "gps.csv");
+            f_s_accel = new File(directory, "s_accel.csv");
+            f_s_gyro = new File(directory, "s_gyro.csv");
+        }else{
+            f_single = new File(directory, time);
+        }
 
     }
 
@@ -101,12 +114,16 @@ public class DataManager {
         running_sign = true;
         mRecorder.setFoler(directory);
         try {
-            bos_p_accel = new BufferedOutputStream(new FileOutputStream(f_p_accel));
-            bos_p_gyro = new BufferedOutputStream(new FileOutputStream(f_p_gyro));
-            bos_p_magn = new BufferedOutputStream(new FileOutputStream(f_p_magn));
-            bos_gps = new BufferedOutputStream(new FileOutputStream(f_gps));
-            bos_s_accel = new BufferedOutputStream(new FileOutputStream(f_s_accel));
-            bos_s_gyro = new BufferedOutputStream(new FileOutputStream(f_s_gyro));
+            if(DataRecordingMode == Multiple_Files) {
+                bos_p_accel = new BufferedOutputStream(new FileOutputStream(f_p_accel));
+                bos_p_gyro = new BufferedOutputStream(new FileOutputStream(f_p_gyro));
+                bos_p_magn = new BufferedOutputStream(new FileOutputStream(f_p_magn));
+                bos_gps = new BufferedOutputStream(new FileOutputStream(f_gps));
+                bos_s_accel = new BufferedOutputStream(new FileOutputStream(f_s_accel));
+                bos_s_gyro = new BufferedOutputStream(new FileOutputStream(f_s_gyro));
+            }else{
+                bos_single = new BufferedOutputStream(new FileOutputStream(f_single));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,18 +141,23 @@ public class DataManager {
         mRecorder.pause();
         LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mDataReceiver);
         try {
-            bos_p_accel.flush();
-            bos_p_accel.close();
-            bos_p_gyro.flush();
-            bos_p_gyro.close();
-            bos_p_magn.flush();
-            bos_p_magn.close();
-            bos_gps.flush();
-            bos_gps.close();
-            bos_s_accel.flush();
-            bos_s_accel.close();
-            bos_s_gyro.flush();
-            bos_s_gyro.close();
+            if(DataRecordingMode == Multiple_Files) {
+                bos_p_accel.flush();
+                bos_p_accel.close();
+                bos_p_gyro.flush();
+                bos_p_gyro.close();
+                bos_p_magn.flush();
+                bos_p_magn.close();
+                bos_gps.flush();
+                bos_gps.close();
+                bos_s_accel.flush();
+                bos_s_accel.close();
+                bos_s_gyro.flush();
+                bos_s_gyro.close();
+            }else{
+                bos_single.flush();
+                bos_single.close();
+            }
             Log.d("File Close", "Closed!");
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -157,22 +179,36 @@ public class DataManager {
                     log = log + ", " + v;
                 }
                 //Log.i(TAG, log);
-                String dataPacket = new StringBuilder()
-                        .append(time).append(",")
-                        .append(value[0]).append(",")
-                        .append(value[1]).append(",")
-                        .append(value[2]).append(";\n")
-                        .toString();
+
                 Writer myWriter;
-                switch (type){
-                    case "ACCEL":
-                        myWriter = new Writer(bos_p_accel,dataPacket);
-                        new Thread(myWriter).start();
-                        break;
-                    case "GYRO":
-                        myWriter = new Writer(bos_p_gyro,dataPacket);
-                        new Thread(myWriter).start();
-                        break;
+                String dataPacket;
+                if(DataRecordingMode == Multiple_Files) {
+                    dataPacket = new StringBuilder()
+                            .append(time).append(",")
+                            .append(value[0]).append(",")
+                            .append(value[1]).append(",")
+                            .append(value[2]).append(";\n")
+                            .toString();
+                    switch (type) {
+                        case "ACCEL":
+                            myWriter = new Writer(bos_p_accel, dataPacket);
+                            new Thread(myWriter).start();
+                            break;
+                        case "GYRO":
+                            myWriter = new Writer(bos_p_gyro, dataPacket);
+                            new Thread(myWriter).start();
+                            break;
+                    }
+                }else{
+                    dataPacket = new StringBuilder()
+                            .append(time).append(",")
+                            .append("p_").append(type).append(",")
+                            .append(value[0]).append(",")
+                            .append(value[1]).append(",")
+                            .append(value[2]).append(";\n")
+                            .toString();
+                    myWriter = new Writer(bos_single, dataPacket);
+                    new Thread(myWriter).start();
                 }
                 Log.i(TAG,type+": "+dataPacket);
             }else if(act == Global.BROADCAST_IMU_SENSOR){
@@ -185,22 +221,35 @@ public class DataManager {
                     log = log + ", " + v;
                 }
                 //Log.i(TAG,log);
-                String dataPacket = new StringBuilder()
-                        .append(time).append(",")
-                        .append(value[0]).append(",")
-                        .append(value[1]).append(",")
-                        .append(value[2]).append(";\n")
-                        .toString();
                 Writer myWriter;
-                switch (type){
-                    case "ACCEL":
-                        myWriter = new Writer(bos_s_accel,dataPacket);
-                        new Thread(myWriter).start();
-                        break;
-                    case "GYRO":
-                        myWriter = new Writer(bos_s_gyro,dataPacket);
-                        new Thread(myWriter).start();
-                        break;
+                String dataPacket;
+                if(DataRecordingMode == Multiple_Files) {
+                    dataPacket = new StringBuilder()
+                            .append(time).append(",")
+                            .append(value[0]).append(",")
+                            .append(value[1]).append(",")
+                            .append(value[2]).append(";\n")
+                            .toString();
+                    switch (type) {
+                        case "ACCEL":
+                            myWriter = new Writer(bos_p_accel, dataPacket);
+                            new Thread(myWriter).start();
+                            break;
+                        case "GYRO":
+                            myWriter = new Writer(bos_p_gyro, dataPacket);
+                            new Thread(myWriter).start();
+                            break;
+                    }
+                }else{
+                    dataPacket = new StringBuilder()
+                            .append(time).append(",")
+                            .append("s_").append(type).append(",")
+                            .append(value[0]).append(",")
+                            .append(value[1]).append(",")
+                            .append(value[2]).append(";\n")
+                            .toString();
+                    myWriter = new Writer(bos_single, dataPacket);
+                    new Thread(myWriter).start();
                 }
                 Log.i(TAG,type+": "+dataPacket);
             }else if(act == Global.BROADCAST_LOCATION){
@@ -210,14 +259,29 @@ public class DataManager {
                 String lng = Double.toString(intent.getDoubleExtra(Global.EXTENDED_DATA_LNG, 0));
                 String speed = Float.toString(intent.getFloatExtra(Global.EXTENDED_DATA_SPEED, 0));
                 //Log.i(TAG,log);
-                String dataPacket = new StringBuilder()
-                        .append(time).append(",")
-                        .append(lat).append(",")
-                        .append(lng).append(",")
-                        .append(speed).append(";\n")
-                        .toString();
-                Writer myWriter = new Writer(bos_gps,dataPacket);
-                new Thread(myWriter).start();
+
+                Writer myWriter;
+                String dataPacket;
+                if(DataRecordingMode == Multiple_Files) {
+                    dataPacket = new StringBuilder()
+                            .append(time).append(",")
+                            .append(lat).append(",")
+                            .append(lng).append(",")
+                            .append(speed).append(";\n")
+                            .toString();
+                    myWriter = new Writer(bos_gps, dataPacket);
+                    new Thread(myWriter).start();
+                }else{
+                    dataPacket = new StringBuilder()
+                            .append(time).append(",")
+                            .append("gps").append(",")
+                            .append(lat).append(",")
+                            .append(lng).append(",")
+                            .append(speed).append(";\n")
+                            .toString();
+                    myWriter = new Writer(bos_single, dataPacket);
+                    new Thread(myWriter).start();
+                }
                 Log.i(TAG,"GPS: "+dataPacket);
             }
         }
