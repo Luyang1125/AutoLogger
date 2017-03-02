@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         }else if(id ==R.id.action_stopCamera) {
             Log.i("MainActivity","Stoping Video Recording");
             firstFragment.stopLogging();
+            new SyncFilesTask(this).execute();
         }
         return super.onOptionsItemSelected(item);
     }
