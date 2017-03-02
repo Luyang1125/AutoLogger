@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         }
 
         mGoogleApiClient.connect();
+
     }
 
 
@@ -118,9 +119,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        // create folder
+        Log.i("Google Drive Sync","onConnected get called");
         new SyncFilesTask(this).execute();
-
     }
 
 

@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by Hongyu on 2/2/17.
@@ -40,39 +39,31 @@ public class SyncFilesTask extends ApiClientAsyncTask<Void, Void, Metadata> {
 
     @Override
     protected Metadata doInBackgroundConnected(Void... arg0) {
-
+        Log.i("Google Drive Sync","Starting");
         DriveId folderID = getFolderbyName("AutoLogger",null);
         DriveFolder loggerfolder = folderID.asDriveFolder();
+        Log.i("Google Drive Sync","Got Google Drive folder");
         // get all the local files and upload
-        File parentDir = new File(Environment.getExternalStorageDirectory(), "AutoLogger");
+        String folderpath = Environment.getExternalStorageDirectory().toString()+"/AutoLogger/";
+        Log.i("Google Drive Sync","Path: "+folderpath);
+        File parentDir = new File(folderpath);
+        if (!parentDir.isDirectory()) {
+            Log.i("Google Drive Sync","Local AutoLogger Folder does not exist");
+            return null;
+        }
+        File[] dirs = parentDir.listFiles();
         ArrayList<File> files = new ArrayList<File>(Arrays.asList(parentDir.listFiles()));
         for (File file : files) {
-            if (file.isDirectory()) {
-                DriveFolder curFolder = getFolderbyName(file.getName(), loggerfolder).asDriveFolder();
-                List<File> nested = new ArrayList<File>(Arrays.asList(file.listFiles()));
-                for (File logfile : nested) {
-                    uploadFile(logfile, curFolder);
-                }
-            }
+//            if (file.isDirectory()) {
+//                DriveFolder curFolder = getFolderbyName(file.getName(), loggerfolder).asDriveFolder();
+//                List<File> nested = new ArrayList<File>(Arrays.asList(file.listFiles()));
+//                for (File logfile : nested) {
+//                    uploadFile(logfile, curFolder);
+//                }
+//            }
             if (file.isFile()) {
                 uploadFile(file, loggerfolder);
             }
-        }
-
-
-
-        while (files.size() > 0) {
-            ArrayList<File> next = new ArrayList<File>();
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    List<File> nested = new ArrayList<File>(Arrays.asList(file.listFiles()));
-                    next.addAll(nested);
-                }
-                if (file.isFile()) {
-
-                }
-            }
-            files = next;
         }
 
         return null;
@@ -99,6 +90,7 @@ public class SyncFilesTask extends ApiClientAsyncTask<Void, Void, Metadata> {
                 .addSortDescending(SortableField.MODIFIED_DATE).build();
         Query folderquery = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.TITLE, foldername))
+                .addFilter(Filters.eq(SearchableField.TRASHED, false))
                 .setSortOrder(sortOrder)
                 .build();
         DriveApi.MetadataBufferResult qresult = Drive.DriveApi.query(getGoogleApiClient(), folderquery).await();
