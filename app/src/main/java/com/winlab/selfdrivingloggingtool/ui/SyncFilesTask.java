@@ -47,7 +47,7 @@ public class SyncFilesTask extends ApiClientAsyncTask<Void, Void, Metadata> {
         String folderpath = Environment.getExternalStorageDirectory().toString()+"/AutoLogger/";
         Log.i("Google Drive Sync","Path: "+folderpath);
         File parentDir = new File(folderpath);
-        if (!parentDir.isDirectory()) {
+        if (parentDir==null || !parentDir.exists()) {
             Log.i("Google Drive Sync","Local AutoLogger Folder does not exist");
             return null;
         }
