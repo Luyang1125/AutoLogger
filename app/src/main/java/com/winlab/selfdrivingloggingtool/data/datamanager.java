@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
-import static java.sql.Types.FLOAT;
-
 /**
  * Created by luyangliu on 1/30/17.
  */
@@ -183,6 +181,7 @@ public class DataManager {
                 Writer myWriter;
                 String dataPacket;
                 if(DataRecordingMode == Multiple_Files) {
+                    Log.i(TAG,"Current Using Multiple Files recording mode");
                     dataPacket = new StringBuilder()
                             .append(time).append(",")
                             .append(value[0]).append(",")
@@ -207,10 +206,17 @@ public class DataManager {
                             .append(value[1]).append(",")
                             .append(value[2]).append(";\n")
                             .toString();
-                    myWriter = new Writer(bos_single, dataPacket);
-                    new Thread(myWriter).start();
+                    if (bos_single == null) {
+                        Log.e("WRITING", "File does not exist");
+                        return;
+                    }
+                    try {
+                        bos_single.write(dataPacket.getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                Log.i(TAG,type+": "+dataPacket);
+                Log.i(TAG,type+": Phone : "+dataPacket);
             }else if(act == Global.BROADCAST_IMU_SENSOR){
                 //Log.i(TAG,"IMU Received!");
                 String time = Long.toString(intent.getLongExtra(Global.EXTENDED_DATA_TIMETAG, 0));
@@ -248,8 +254,15 @@ public class DataManager {
                             .append(value[1]).append(",")
                             .append(value[2]).append(";\n")
                             .toString();
-                    myWriter = new Writer(bos_single, dataPacket);
-                    new Thread(myWriter).start();
+                    if (bos_single == null) {
+                        Log.e("WRITING", "File does not exist");
+                        return;
+                    }
+                    try {
+                        bos_single.write(dataPacket.getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 Log.i(TAG,type+": "+dataPacket);
             }else if(act == Global.BROADCAST_LOCATION){
@@ -279,8 +292,15 @@ public class DataManager {
                             .append(lng).append(",")
                             .append(speed).append(";\n")
                             .toString();
-                    myWriter = new Writer(bos_single, dataPacket);
-                    new Thread(myWriter).start();
+                    if (bos_single == null) {
+                        Log.e("WRITING", "File does not exist");
+                        return;
+                    }
+                    try {
+                        bos_single.write(dataPacket.getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 Log.i(TAG,"GPS: "+dataPacket);
             }

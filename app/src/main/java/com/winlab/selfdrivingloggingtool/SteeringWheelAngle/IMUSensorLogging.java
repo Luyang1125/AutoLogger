@@ -71,9 +71,9 @@ public class IMUSensorLogging {
         }
         socketConnected = false;
 
-        //String address = "00:A0:96:3D:93:36";
+        String address = "00:A0:96:3D:93:36";
         //String address = "00:A0:96:3D:90:8C";
-        String address = "EC:FE:7E:11:86:58";
+//        String address = "EC:FE:7E:11:86:58";
 
 
         mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(address);
